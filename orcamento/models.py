@@ -19,7 +19,8 @@ class Department(models.Model):
 class Scenario(models.Model):
     initial_period=models.DateField()
     end_period=models.DateField()
-
+    created_at=models.DateTimeField(auto_now_add=True)
+    last_modified_at=models.DateTimeField(auto_now=True)
 
 class EmployeeState(models.Model):
     employee=models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True)
@@ -32,5 +33,3 @@ class EmployeeState(models.Model):
     commission=models.DecimalField(decimal_places=2, max_digits=20)
     initial_month=models.DateField()
     end_month=models.DateField()
-
-
