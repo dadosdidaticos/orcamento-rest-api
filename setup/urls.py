@@ -4,13 +4,15 @@ from rest_framework import routers
 from orcamento.views import CompanyViewset, EmployeeViewset, ScenarioViewset, DepartmentViewset, EmployeeStateViewset
 
 router = routers.DefaultRouter()
-router.register('Company', CompanyViewset, basename='Company')
-router.register('Employee', EmployeeViewset, basename='Employee')
-router.register('Scenario', ScenarioViewset, basename='Scenario')
-router.register('Department', DepartmentViewset, basename='Department')
-router.register('EmployeeState', EmployeeStateViewset, basename='EmployeeState')
+router.register('company', CompanyViewset, basename='Company')
+router.register('employee', EmployeeViewset, basename='Employee')
+router.register('scenario', ScenarioViewset, basename='Scenario')
+router.register('department', DepartmentViewset, basename='Department')
+router.register('employeeState', EmployeeStateViewset, basename='EmployeeState')
+#router.register('execute', CalculateScenarioView, basename='execute')
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',include(router.urls))
+    path('',include(router.urls)),
 ]

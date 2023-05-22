@@ -19,9 +19,9 @@ class DepartmentSerializer(serializers.ModelSerializer):
 class ScenarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Scenario
-        fields = ['id','initial_period','end_period','created_at','last_modified_at']
+        fields = ['id','name','initial_period','end_period','created_at','last_modified_at']
         
 class EmployeeStateSerializer(serializers.ModelSerializer):
     class Meta:
         model = EmployeeState
-        fields = ['id','employee','department','scenario','job','base_salary','benefits','performance_award','commission','initial_month','end_month']
+        fields = ['id','employee','department','scenario','job','employee_type','relationship_type','base_salary','benefits','performance_award','commission','initial_month','end_month']
