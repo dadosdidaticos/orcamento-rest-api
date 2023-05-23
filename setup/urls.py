@@ -14,4 +14,5 @@ router.register('employeeStates', EmployeeStateViewset, basename='EmployeeState'
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include(router.urls)),
+    path('__debug__/', include('debug_toolbar.urls')),
 ]
