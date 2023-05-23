@@ -10,6 +10,9 @@ class Employee(models.Model):
         return self.name
 
 class Company(models.Model):
+    class Meta:
+        verbose_name_plural="Companies"
+
     name=models.CharField(max_length=30)
     cnpj=models.CharField(max_length=18)
     def __str__(self):
@@ -28,9 +31,6 @@ class Scenario(models.Model):
     end_period=models.DateField()
     created_at=models.DateTimeField(auto_now_add=True)
     last_modified_at=models.DateTimeField(auto_now=True)
-
-    def get_employee_state_data_frame(self):
-        return pd.DataFrame.from_records(EmployeeState.objects.filter(scenario=self).values())
 
     def __str__(self):
         return self.name
@@ -59,6 +59,7 @@ class EmployeeState(models.Model):
     commission=models.DecimalField(decimal_places=2, max_digits=20)
     initial_month=models.DateField()
     end_month=models.DateField()
+
     def __str__(self):
         return str(self.id)
     
