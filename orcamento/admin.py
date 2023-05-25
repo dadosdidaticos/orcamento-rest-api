@@ -10,7 +10,7 @@ class Departamentos(admin.ModelAdmin):
 admin.site.register(Department, Departamentos)
 
 class Empresas(admin.ModelAdmin):
-    list_display = ('id','name','cnpj',)
+    list_display = ('id','name','cnpj','inss_aliquot')
     list_display_links = ('id',)
     search_fields = ('name',)
     list_per_page = 20
@@ -34,7 +34,7 @@ class Cenarios(admin.ModelAdmin):
 admin.site.register(Scenario, Cenarios)
 
 class Orcamento(admin.ModelAdmin):
-    list_display = ('id','employee','department','base_salary','benefits','performance_award','commission','initial_month','end_month')
+    list_display = ('id','employee','employee_type','relationship_type','department','base_salary','benefits','performance_award','commission','initial_month','end_month')
     list_display_links = ('id',)
     search_fields = ('scenario',)
     list_per_page = 20

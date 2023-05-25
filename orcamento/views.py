@@ -1,11 +1,13 @@
+from decimal import Decimal
 from rest_framework import viewsets
-from rest_framework.decorators import api_view, action
-from rest_framework.renderers import JSONRenderer
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from orcamento.models import Employee,EmployeeState, Scenario, Department, Company
 from orcamento.serializers import DepartmentSerializer, EmployeeSerializer, EmployeeStateSerializer, ScenarioSerializer,CompanySerializer
 from orcamento.models import EmployeeState
-from rest_framework.response import Response
+from django_pandas.io import read_frame
 import pandas as pd
+import numpy as np
 import json
 
 class CompanyViewset(viewsets.ModelViewSet):
@@ -30,11 +32,11 @@ class ScenarioViewset(viewsets.ModelViewSet):
 
     @action(detail=True,methods=["GET"])
     def getCalculatedScenario(self, request, pk=None):
-        
+        """Realiza o Cálculo de impostos e valores para devolver o custo total por colaborador."""
         #obtaining the scenario from database:
-        serializer = EmployeeStateSerializer(EmployeeState.objects.select_related('employee').filter(scenario=pk), many=True)
-        df_scenario = pd.read_json(JSONRenderer().render(serializer.data).decode("utf-8"))
-        
+        qs_scenario = EmployeeState.objects.select_related('employee').filter(scenario=pk)
+        df_scenario = read_frame(qs_scenario,fieldnames=['id','employee__name','employee__hiring_date','employee__health_insurance_cost','department__company','department__company__inss_aliquot','department','scenario','job','employee_type','relationship_type','base_salary','benefits','performance_award','commission','initial_month','end_month'])
+
         #expanding month intervals into a list:
         to_be_exploded=df_scenario[['initial_month','end_month']]
         to_be_exploded = to_be_exploded.apply(lambda x: 
@@ -50,7 +52,26 @@ class ScenarioViewset(viewsets.ModelViewSet):
         df_scenario.drop(['initial_month','end_month'], axis=1, inplace=True)
         df_scenario=df_scenario.explode('month')
 
-        #return Response(data=json.loads(serializer.data))
+        #calculating fgts
+        FGTS_ALIQUOT=Decimal(0.08)
+        is_fgts_eligible=(df_scenario['employee_type']!='Inativo') & (df_scenario['relationship_type']=='CLT')
+        df_scenario['fgts']=np.where(is_fgts_eligible, df_scenario['base_salary']*FGTS_ALIQUOT,0)
+
+        #calculating Inss_patronal
+        is_inss_eligible=(df_scenario['employee_type']!='Inativo') & ((df_scenario['relationship_type']=='CLT') | (df_scenario['relationship_type']=='Diretor Estaturário'))
+        df_scenario['inss_patronal']=np.where(is_inss_eligible, df_scenario['base_salary']*df_scenario['department__company__inss_aliquot'],0)
+
+        #calculating total comp
+        df_scenario['total']=df_scenario[[
+            'base_salary',
+            'fgts',
+            'inss_patronal',
+            'employee__health_insurance_cost',
+            'performance_award',
+            'commission',
+            'benefits'
+        ]].sum(axis=1)
+
         return Response(data=json.loads(df_scenario.to_json(orient='records', lines=False)))
 
 class DepartmentViewset(viewsets.ModelViewSet):
