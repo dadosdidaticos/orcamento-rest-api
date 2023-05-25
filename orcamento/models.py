@@ -37,22 +37,43 @@ class Scenario(models.Model):
         return self.name
 
 class EmployeeState(models.Model):
+    # RELATIONSHIP_NAMES = (
+    #     'CLT',
+    #     'PESSOA_JURIDICA',
+    #     'ESTAGIARIO',
+    #     'DIRETOR',
+    # )
+    # RELATIONSHIP_VALS = (
+    #     'C',
+    #     'P',
+    #     'E',
+    #     'D',
+    # )
+    CLT='C'
+    PESSOA_JURIDICA='P'
+    ESTAGIARIO='E'
+    DIRETOR='D'
+    RELATIONSHIPS_DICT = {'C':'CLT','P':'Pessoa Jurídica','E':'Estagiário','D':'Diretor Estatutário'}
     RELATIONSHIPS = (
-        ("C","CLT"),
-        ("P","Pessoa Jurídica"),
-        ("E","Estagiário"),
-        ("D","Diretor Estatutário")
+        (PESSOA_JURIDICA,'P'),
+        (ESTAGIARIO,'E'),
+        (DIRETOR,'D'),
     )
+
+    ATIVO='A'
+    PROJECAO='P'
+    INATIVO='I'
+    EMPLOYEE_TYPES_DICT = {'A':'Ativo','P':'Projeção','I':'Inativo'}
     EMPLOYEE_TYPES = (
-        ("A","Ativo"),
-        ("P","Projeção"),
-        ("I","Inativo")
+        (ATIVO,"Ativo"),
+        (PROJECAO,"Projeção"),
+        (INATIVO,"Inativo")
     )
     employee=models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True)
     department=models.ForeignKey(Department, on_delete=models.SET_NULL, null=True)
     scenario=models.ForeignKey(Scenario, on_delete=models.SET_NULL, null=True)
     job=models.CharField(max_length=30)
-    employee_type=models.CharField(max_length=1, choices=EMPLOYEE_TYPES, blank=False, null=False, default="C")
+    employee_type=models.CharField(max_length=1, choices=EMPLOYEE_TYPES, blank=False, null=False, default="A")
     relationship_type=models.CharField(max_length=1, choices=RELATIONSHIPS, blank=False, null=False, default="C")
     base_salary=models.DecimalField(decimal_places=2, max_digits=20)
     benefits=models.DecimalField(decimal_places=2, max_digits=20)
