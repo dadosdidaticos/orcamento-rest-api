@@ -37,27 +37,17 @@ class Scenario(models.Model):
         return self.name
 
 class EmployeeState(models.Model):
-    # RELATIONSHIP_NAMES = (
-    #     'CLT',
-    #     'PESSOA_JURIDICA',
-    #     'ESTAGIARIO',
-    #     'DIRETOR',
-    # )
-    # RELATIONSHIP_VALS = (
-    #     'C',
-    #     'P',
-    #     'E',
-    #     'D',
-    # )
+
     CLT='C'
     PESSOA_JURIDICA='P'
     ESTAGIARIO='E'
     DIRETOR='D'
     RELATIONSHIPS_DICT = {'C':'CLT','P':'Pessoa Jurídica','E':'Estagiário','D':'Diretor Estatutário'}
     RELATIONSHIPS = (
-        (PESSOA_JURIDICA,'P'),
-        (ESTAGIARIO,'E'),
-        (DIRETOR,'D'),
+        (CLT,'CLT'),
+        (PESSOA_JURIDICA,'Pessoa Jurídica'),
+        (ESTAGIARIO,'Estagiário'),
+        (DIRETOR,'Diretor'),
     )
 
     ATIVO='A'

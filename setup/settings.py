@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'corsheaders',
     'orcamento',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
