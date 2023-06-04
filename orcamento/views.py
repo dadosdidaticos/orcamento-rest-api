@@ -24,7 +24,6 @@ class EmployeeStateViewset(viewsets.ModelViewSet):
     """Exibe todos os estados de empregados"""
     queryset=EmployeeState.objects.all()
     serializer_class=EmployeeStateSerializer
-    http_method_names = ['get', 'put', 'post','head']
 
 class ScenarioViewset(viewsets.ModelViewSet):
     """Exibe todos os cenários"""
