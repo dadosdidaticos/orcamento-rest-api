@@ -60,7 +60,7 @@ class ScenarioViewset(viewsets.ModelViewSet):
 
         #calculating Inss_patronal
         is_inss_eligible=(df_scenario['employee_type']!='Inativo') & ((df_scenario['relationship_type']=='CLT') | (df_scenario['relationship_type']=='Diretor Estaturário'))
-        df_scenario['inss_patronal']=np.where(is_inss_eligible, df_scenario['base_salary']*df_scenario['department__company__inss_aliquot'],0)
+        df_scenario['inss_patronal']=np.where(is_inss_eligible, df_scenario['base_salary']*df_scenario['department__company__inss_aliquot']/100,0)
 
         #calculating total comp
         df_scenario['total']=df_scenario[[

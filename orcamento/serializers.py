@@ -9,7 +9,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
 class CompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
-        fields = ['id','name','cnpj']
+        fields = ['id','name','cnpj','inss_aliquot']
         
 class DepartmentSerializer(serializers.ModelSerializer):
     class Meta:
