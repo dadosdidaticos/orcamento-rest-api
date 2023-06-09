@@ -1,6 +1,4 @@
 from django.db import models
-from uuid import uuid4
-import pandas as pd
 
 class Employee(models.Model):
     name=models.CharField(max_length=30)
