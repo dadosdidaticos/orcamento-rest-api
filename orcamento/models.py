@@ -59,7 +59,7 @@ class EmployeeState(models.Model):
     )
     employee=models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True)
     department=models.ForeignKey(Department, on_delete=models.SET_NULL, null=True)
-    scenario=models.ForeignKey(Scenario, on_delete=models.SET_NULL, null=True)
+    scenario=models.ForeignKey(Scenario, on_delete=models.CASCADE, null=True)
     job=models.CharField(max_length=30)
     employee_type=models.CharField(max_length=1, choices=EMPLOYEE_TYPES, blank=False, null=False, default="A")
     relationship_type=models.CharField(max_length=1, choices=RELATIONSHIPS, blank=False, null=False, default="C")
