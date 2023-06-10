@@ -75,18 +75,21 @@ class ScenarioViewset(viewsets.ModelViewSet):
         df_scenario['total']=df_scenario[comp_columns].sum(axis=1)
         comp_columns.append('total')
 
-        df_scenario_grouped_by_company=df_scenario[['department__company']+comp_columns].groupby('department__company')
+        df_scenario_grouped_by_month=df_scenario[['month']+comp_columns].groupby(['month'])
+        df_scenario_by_month=df_scenario_grouped_by_month.sum().reset_index()
 
-        df_scenario_grouped_by_department=df_scenario[['department']+comp_columns].groupby('department')
-
+        df_scenario_grouped_by_company=df_scenario[['month','department__company']+comp_columns].groupby(['month','department__company'])
         df_scenario_by_company=df_scenario_grouped_by_company.sum().reset_index()
+
+        df_scenario_grouped_by_department=df_scenario[['month','department']+comp_columns].groupby(['month','department'])
         df_scenario_by_department=df_scenario_grouped_by_department.sum().reset_index()
+
         response_dict={
+            'df_scenario_by_month':df_scenario_by_month.to_dict('records'),
             'df_scenario_by_company':df_scenario_by_company.to_dict('records'),
             'df_scenario_by_department':df_scenario_by_department.to_dict('records'),
             'df_scenario_by_employee':df_scenario.to_dict('records')
         }
-        #return Response(data=json.loads(df_scenario_by_company.to_json(orient='records', lines=False)))
         return Response(data=response_dict)
 
 class DepartmentViewset(viewsets.ModelViewSet):
