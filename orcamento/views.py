@@ -48,7 +48,7 @@ class ScenarioViewset(viewsets.ModelViewSet):
                                         )
         to_be_exploded.name='month'
 
-        #expanding
+        #expanding dataframe according to list
         df_scenario=pd.concat([df_scenario,to_be_exploded],axis=1)
         df_scenario.drop(['initial_month','end_month'], axis=1, inplace=True)
         df_scenario=df_scenario.explode('month')
@@ -63,17 +63,31 @@ class ScenarioViewset(viewsets.ModelViewSet):
         df_scenario['inss_patronal']=np.where(is_inss_eligible, df_scenario['base_salary']*df_scenario['department__company__inss_aliquot']/100,0)
 
         #calculating total comp
-        df_scenario['total']=df_scenario[[
+        comp_columns = [
             'base_salary',
             'fgts',
             'inss_patronal',
             'employee__health_insurance_cost',
             'performance_award',
             'commission',
-            'benefits'
-        ]].sum(axis=1)
+            'benefits',
+        ]
+        df_scenario['total']=df_scenario[comp_columns].sum(axis=1)
+        comp_columns.append('total')
 
-        return Response(data=json.loads(df_scenario.to_json(orient='records', lines=False)))
+        df_scenario_grouped_by_company=df_scenario[['department__company']+comp_columns].groupby('department__company')
+
+        df_scenario_grouped_by_department=df_scenario[['department']+comp_columns].groupby('department')
+
+        df_scenario_by_company=df_scenario_grouped_by_company.sum().reset_index()
+        df_scenario_by_department=df_scenario_grouped_by_department.sum().reset_index()
+        response_dict={
+            'df_scenario_by_company':df_scenario_by_company.to_dict('records'),
+            'df_scenario_by_department':df_scenario_by_department.to_dict('records'),
+            'df_scenario_by_employee':df_scenario.to_dict('records')
+        }
+        #return Response(data=json.loads(df_scenario_by_company.to_json(orient='records', lines=False)))
+        return Response(data=response_dict)
 
 class DepartmentViewset(viewsets.ModelViewSet):
     """Exibe todos os departamentos"""
